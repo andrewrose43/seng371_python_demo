@@ -41,7 +41,13 @@ def main():
 
 							# Save the Item's timestamp for later. If it's out of the search range,
 							# move on to the next Item
+							# If no time zone information is included, don't take it
+							# This is necessary in order to avoid causing errors
+							# which would occur when you compare datetimes and only one of
+							# the datetimes has a time zone
 							item_time = dateutil.parser.parse(item_obj["properties"]["datetime"])
+							if not item_time.tzinfo:
+								continue
 							if not (item_time > btime[0] and item_time < btime[1]):
 								continue
 
@@ -60,11 +66,13 @@ def main():
 											break
 
 if __name__ == "__main__":
-	# Get the timeframe defined
-	btime = [
-		dateutil.parser.parse("2017-01-20T00:00:00Z"),
-		dateutil.parser.parse("2017-12-30T00:00:00Z")
-	]
 	# This line is here to circumvent a PyCharm (Python IDE) bug that wasn't recognizing dateutil
 	import dateutil.parser
+	# Get the timeframe defined
+	btime = [
+		dateutil.parser.parse("2017-02-20T00:00:00Z"),
+		dateutil.parser.parse("2017-12-30T00:00:00Z")
+	]
+	# btime[0].tzinfo = None
+	# btime[1].tzinfo = None
 	main()
