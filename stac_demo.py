@@ -73,8 +73,20 @@ def main():
 									for coordinate in layer2:
 										if (coordinate[0] > bbox[0] and coordinate[0] < bbox[2] and coordinate[1] > bbox[1] and coordinate[1] < bbox[3]):
 											print(coordinate)
-											# process/download/etc the Item
+											# download the Item's thumbnail
 											download_jpg(item_obj['assets']['thumbnail']['href'], img_path, item_obj['id'])
+
+											# save its metadata in a JSON file
+											# make the json thing as a dict
+											# the image shares its name with the JSON file
+											# so there is no need for an image link/name entry here
+											metadata_dict = {
+												"coordinates": item_obj['geometry']['coordinates'],
+												"timestamp": str(item_time)
+											}
+											with open(metadata_path + item_obj['id'] + '.json', 'w') as outfile:
+												json.dump(metadata_dict, outfile)
+
 											grab_count = grab_count + 1
 
 											# stop if you've grabbed enough things
