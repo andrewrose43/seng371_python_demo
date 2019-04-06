@@ -1,7 +1,7 @@
 import urllib.request
 import json
 import sys
-# dateutil.parser is also imported, but only in the "if name==main" block at the bottom of this file. This is purely to avoid a PyCharm (Python IDE) glitch which didn't recognize the module.
+import dateutil.parser
 
 # The URL for the MUX camera
 baseURL = 'https://cbers-stac-0-6.s3.amazonaws.com/CBERS4/MUX/'
@@ -35,15 +35,20 @@ def main():
 
 	# Get the MUX catalog object as a Python dictionary
 	mux_json_obj = json.loads(urllib.request.urlopen(baseURL + 'catalog.json').read())
+
 	for path_link in mux_json_obj["links"]:
 		if path_link['rel'] == 'child':
+
 			# Get each path's catalog object as a Python dictionary
 			path_json_obj = json.loads(urllib.request.urlopen(baseURL + path_link['href']).read())
+
 			for row_link in path_json_obj["links"]:
 				if row_link['rel'] == 'child':
+
 					# Get each row's catalog object as a Python dictionary
 					# note that the URL has the path's three digits and '/' added in
 					row_json_obj = json.loads(urllib.request.urlopen(baseURL + path_link['href'][:4] + row_link['href']).read())
+
 					# Finally, we loop through the actual items
 					for item_link in row_json_obj["links"]:
 						if item_link['rel'] == 'item':
@@ -72,7 +77,7 @@ def main():
 									# AND the Item is within the desired timeframe, we want it!
 									for coordinate in layer2:
 										if (coordinate[0] > bbox[0] and coordinate[0] < bbox[2] and coordinate[1] > bbox[1] and coordinate[1] < bbox[3]):
-											print(coordinate)
+											
 											# download the Item's thumbnail
 											download_jpg(item_obj['assets']['thumbnail']['href'], img_path, item_obj['id'])
 
@@ -97,13 +102,10 @@ def main():
 											break
 
 if __name__ == "__main__":
-	# This line is here to circumvent a PyCharm (Python IDE) bug that wasn't recognizing dateutil
-	import dateutil.parser
+	
 	# Get the timeframe defined
 	btime = [
 		dateutil.parser.parse("2017-02-20T00:00:00Z"),
 		dateutil.parser.parse("2017-12-30T00:00:00Z")
 	]
-	# btime[0].tzinfo = None
-	# btime[1].tzinfo = None
 	main()
