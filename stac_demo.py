@@ -1,9 +1,14 @@
 import urllib.request
 import json
+import sys
 # dateutil.parser is also imported, but only in the "if name==main" block at the bottom of this file. This is purely to avoid a PyCharm (Python IDE) glitch which didn't recognize the module.
 
 # The URL for the MUX camera
 baseURL = 'https://cbers-stac-0-6.s3.amazonaws.com/CBERS4/MUX/'
+# The path to save photos to
+img_path = "thumbnails/"
+# The path to save metadata to
+metadata_path = "metadata/"
 
 # A search bounding box for testing purposes
 bbox = [
@@ -13,13 +18,20 @@ bbox = [
 	5
 ]
 # A bounding time interval for testing purposes
+# initially blank; is filled in the starter code
 btime = []
 
-# Counter used to only grab that many Items
-test_limiter = 5
+# Downloads a jpg and stores it in the desired folder
+def download_jpg(url, file_path, file_name):
+	full_path = file_path + file_name + '.jpg'
+	urllib.request.urlretrieve(url, full_path)
 
 # Trawl that catalog!
 def main():
+
+	# Counter and limiter used to only grab that many Items
+	test_limiter = 3
+	grab_count = 0
 
 	# Get the MUX catalog object as a Python dictionary
 	mux_json_obj = json.loads(urllib.request.urlopen(baseURL + 'catalog.json').read())
@@ -62,7 +74,14 @@ def main():
 										if (coordinate[0] > bbox[0] and coordinate[0] < bbox[2] and coordinate[1] > bbox[1] and coordinate[1] < bbox[3]):
 											print(coordinate)
 											# process/download/etc the Item
-											# once you've done that based on the one coordinate being in the bbox, you've grabbed the Item and don't want to grab it again, so break
+											download_jpg(item_obj['assets']['thumbnail']['href'], img_path, item_obj['id'])
+											grab_count = grab_count + 1
+
+											# stop if you've grabbed enough things
+											if (grab_count == test_limiter):
+												print("Done: downloaded " + str(grab_count) + " Items")
+												sys.exit()
+												# once you've done that based on the one coordinate being in the bbox, you've grabbed the Item and don't want to grab it again, so break
 											break
 
 if __name__ == "__main__":
