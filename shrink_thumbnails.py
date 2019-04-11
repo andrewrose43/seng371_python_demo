@@ -2,9 +2,9 @@ from PIL import Image
 import os
 
 # The path where the source thumbnails are located
-source_path = "thumbnails/"
+source_path = "input/images/"
 # The path where the shrunken thumbnails are deposited
-dump_path = "thumbnails_small/"
+dump_path = "output/"
 
 size = 100, 100
 

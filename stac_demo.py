@@ -6,9 +6,9 @@ import dateutil.parser
 # The URL for the MUX camera
 baseURL = 'https://cbers-stac-0-6.s3.amazonaws.com/CBERS4/MUX/'
 # The path to save photos to
-img_path = "thumbnails/"
+img_path = "input/images/"
 # The path to save metadata to
-metadata_path = "metadata/"
+metadata_path = "input/metadata/"
 
 # A search bounding box for testing purposes
 bbox = [
@@ -17,9 +17,13 @@ bbox = [
 	54,
 	5
 ]
+
 # A bounding time interval for testing purposes
 # initially blank; is filled in the starter code
-btime = []
+btime = [
+        dateutil.parser.parse("2017-02-20T00:00:00Z"),
+	dateutil.parser.parse("2017-12-30T00:00:00Z")
+]
 
 # Downloads a jpg and stores it in the desired folder
 def download_jpg(url, file_path, file_name):
@@ -102,10 +106,5 @@ def main():
 											break
 
 if __name__ == "__main__":
-	
-	# Get the timeframe defined
-	btime = [
-		dateutil.parser.parse("2017-02-20T00:00:00Z"),
-		dateutil.parser.parse("2017-12-30T00:00:00Z")
-	]
+
 	main()

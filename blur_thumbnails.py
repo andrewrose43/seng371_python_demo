@@ -2,18 +2,13 @@ from PIL import Image, ImageFilter
 import os
 
 # The path where the source thumbnails are located
-source_path = "thumbnails/"
+source_path = "input/images/"
 # The path where the filtered thumbnails are deposited
-dump_path = "thumbnails_blurred/"
+dump_path = "output/"
 
 size = 100, 100
 
 def main():
-
-    # The list where the average R, G, and B values of
-    # every pixel in all the photos will be dumped
-    #average = [0,0,0]
-    #pixel_count = 0;
     
     for filename in os.listdir(source_path):
         im = Image.open(source_path + filename)
