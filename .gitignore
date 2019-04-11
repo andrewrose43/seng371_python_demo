@@ -124,3 +124,9 @@ dmypy.json
 
 # Idea
 .idea/
+
+# Images
+*.jpg
+
+# JSON
+*.json
